@@ -1,6 +1,6 @@
 import numpy as np
 import math
-import matplotlib.pyplot as plt
+import pylab
 
 
 def u_0(x, t):
@@ -20,36 +20,51 @@ def func(x, t):
 
 
 # граничные условия
-# a[0] * u(0, t) + b[0] * ux(0, t) = g[0]
-# a[1] * u(1, t) + b[1] * ux(1, t) = g[1]
-alpha = [0, 1]
-beta = [1, 1]
+# a[0] * u(0, t) + b[0] * ux(0, t) = c[0]
+# a[1] * u(1, t) + b[1] * ux(1, t) = c[1]
+a_ = [0, 1]
+b = [1, 1]
 
 
-def gamma0(t):
+def c0(t):
     return -t / 2
 
 
-def gamma1(t):
+def c1(t):
     return 3 + np.arccos(t / 2) - t / (4 - t ** 2) ** (1 / 2)
 
 
-def unext_2(u_, a, h, t, now):
+def unext(indicator, u_, a, h, t, now):
     u = np.zeros(len(u_[0]))
-    for i in range(1, len(u) - 1):
-        u[i] = 2 * u_[1, i] - u_[0, i] + ((a * t / h) ** 2) * \
-               (u_[1, i + 1] - 2 * u_[1, i] + u_[1, i - 1]) + t ** 2 * func(i * h, now - t)
-    u[0] = (gamma0(now) + ((beta[0] / (2 * h)) * (u[2] - 4 * u[1]))) / (alpha[0] - (3 * beta[0]) / (2 * h))
-    u[-1] = (gamma1(now) + (beta[1] / (2 * h)) * (-4 * u[-2] + u[-3])) / (alpha[1] - (3 * beta[1]) / (2 * h))
-    return u
+    i = 1
+    if indicator == 2:
+        while i < len(u) - 1:
+            u[i] = 2 * u_[1][i] - u_[0][i] + ((a * t / h) ** 2) * \
+                   (u_[1][i + 1] - 2 * u_[1][i] + u_[1][i - 1]) + t ** 2 * func(i * h, now - t)
+            i += 1
+        u[0] = (c0(now) + ((b[0] / (2 * h)) * (u[2] - 4 * u[1]))) / (a_[0] - (3 * b[0]) / (2 * h))
+        u[-1] = (c1(now) + (b[1] / (2 * h)) * (-4 * u[-2] + u[-3])) / (a_[1] - (3 * b[1]) / (2 * h))
+        return u
+    else:
+        while i < len(u) - 1:
+            u[i] = 2 * u_[1][i] - u_[0][i] + ((a * t / h) ** 2) * \
+                   (u_[1][i + 1] - 2 * u_[1][i] + u_[1][i - 1]) + t ** 2 * func(i * h, now - t)
+            i += 1
+        u[0] = (c0(now) - b[0] * u[1] / h) / (a_[0] - b[0] / h)
+        u[-1] = (c1(now) + b[1] * u[-2] / h) / (a_[1] + b[1] / h)
+        return u
 
 
-def u0n_2(u, t, arr_x, a):
-    return u + t * ut_x0(arr_x) + ((t ** 2) / 2) * (a ** 2 * u_x0(arr_x) + func(arr_x, 0))
+def u0n(indicator, u, t, arr_x, a):
+    if indicator == 2:
+        return u + t * ut_x0(arr_x) + ((t ** 2) / 2) * (a ** 2 * u_x0(arr_x) + func(arr_x, 0))
+    else:
+        return u + t * ut_x0(arr_x)
 
 
 def graph():
-    C = 1 / 2
+    indicator = 2
+    C = 1 / 3
     a = np.sqrt(1 / 2)
 
     x0 = 0
@@ -59,42 +74,42 @@ def graph():
     hn = 0.01
     step = 0.001
     h = np.arange(h0, hn, step)
+    hh = []
 
     t0 = 0
-    T = 20
+    #tn = 0.5
+    T = 20 # количество точек
 
-    error = np.zeros(len(h))
+    err = np.zeros(len(h))
     i = 0
 
-    while h0 <= hn:
+    for h0 in h:
         N = round((xn - x0) / h0)
-        arr_x = np.linspace(x0, xn, N)
+        u = [np.zeros(N), np.zeros(N), np.zeros(N)]
+        arr_x = np.linspace(x0, xn, N)  # np.arange(x0,xn,step)
         t = C * h0 / a
+     #   T = round((tn - t0) / t)
         tn = t0 + t * T
+     #   print(t)
+     #   print(T)
         arr_t = np.linspace(t0 + 3 * t, tn, T)
-        u = np.zeros((3, N))
         u[0] = u_x0(arr_x)
-        u[1] = u0n_2(u[0], t, arr_x, a)
-        u[2] = unext_2(u[0:2], a, h0, t, t0 + 2 * t)
+        u[1] = u0n(indicator, u[0], t, arr_x, a)
+        temp = t0 + 2*t
+        u[2] = unext(indicator, u, a, h0, t, temp)
         for t_ in arr_t:
             u[0] = u[1]
             u[1] = u[2]
-            u[2] = unext_2(u[0:2], a, h0, t, t_)
-        error[i] = np.max(np.abs(u[2] - u_0(arr_x, tn)))
-        h0 += step
+            u[2] = unext(indicator, u, a, h0, t, t_)
+        err[i] = np.max(np.abs(u[2] - u_0(arr_x, tn)))
+     #   hh.append(h0)
+     #   h0 += step
         i += 1
 
-    h = np.log(h)
-    error = np.log(error)
-
-    plt.suptitle('Зависимость логарифма абсолютной погрешности от логарифма шага интегрирования')
-    plt.subplot(1, 1, 1)
-    plt.xlabel("log(h)")
-    plt.ylabel("log(max(|Δu|))")
-    plt.grid()
-    plt.plot(h, error, color='k')
-
-    plt.show()
+    pylab.plot(np.log(h), np.log(err), label=str(indicator) + " порядок")
+    pylab.grid()
+    pylab.legend()
+    pylab.show()
 
 
 graph()

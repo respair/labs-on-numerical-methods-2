@@ -35,10 +35,11 @@ def c1(t):
 
 
 def unext(indicator, u_, a, h, t, now):
-    u = np.zeros(len(u_[0]))
+    l = len(u_[0])
+    u = np.zeros(l)
     i = 1
     if indicator == 2:
-        while i < len(u) - 1:
+        while i < l - 1:
             u[i] = 2 * u_[1][i] - u_[0][i] + ((a * t / h) ** 2) * \
                    (u_[1][i + 1] - 2 * u_[1][i] + u_[1][i - 1]) + t ** 2 * func(i * h, now - t)
             i += 1
@@ -46,7 +47,7 @@ def unext(indicator, u_, a, h, t, now):
         u[-1] = (c1(now) + (b[1] / (2 * h)) * (-4 * u[-2] + u[-3])) / (a_[1] - (3 * b[1]) / (2 * h))
         return u
     else:
-        while i < len(u) - 1:
+        while i < l - 1:
             u[i] = 2 * u_[1][i] - u_[0][i] + ((a * t / h) ** 2) * \
                    (u_[1][i + 1] - 2 * u_[1][i] + u_[1][i - 1]) + t ** 2 * func(i * h, now - t)
             i += 1

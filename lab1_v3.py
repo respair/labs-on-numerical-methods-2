@@ -77,7 +77,7 @@ def graph():
     hh = []
 
     t0 = 0
-    #tn = 0.5
+    # tn = 0.5
     T = 20 # количество точек
 
     err = np.zeros(len(h))

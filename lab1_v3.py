@@ -109,7 +109,8 @@ def graph():
             u[0] = u[1]
             u[1] = u[2]
             u[2] = unext(indicator, u, a, h0, t, t_, arr_x)
-        err[i] = np.max(np.abs(u[2] - u_0(arr_x, tn)))
+        arr = np.abs(u[2] - u_0(arr_x, tn))
+        err[i] = np.max(arr)
         i += 1
 
     pylab.plot(np.log(err), np.log(h), label=str(indicator) + " порядок")

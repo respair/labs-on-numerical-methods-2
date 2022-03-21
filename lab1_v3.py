@@ -71,7 +71,7 @@ def u0n(indicator, u, t, arr_x, a):
 
 
 def graph():
-    indicator = 1
+    indicator = 1 # изменить на 2 для 2 порядка !!
     a = np.sqrt(1 / 2)
 
     x0 = 0

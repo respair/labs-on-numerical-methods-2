@@ -96,31 +96,6 @@ def graph():
     err = np.zeros(len(h))
     i = 0
 
-    '''
-    for h0 in h:
-        print(h0)
-        N = round((xn - x0) / h0)
-        u = [np.zeros(N), np.zeros(N), np.zeros(N)]
-        arr_x = np.linspace(x0, xn, N)  # np.arange(x0,xn,step)
-        t = h0 / (2.5 * a)
-        #   T = round((tn - t0) / t)
-        tn = t0 + t * T
-        #   print(t)
-        #   print(T)
-        arr_t = np.linspace(t0 + 3 * t, tn, T)
-        for t_ in arr_t:
-            if t_ == arr_t[0]:
-                u[0] = u_x0(arr_x)
-                u[1] = u0n(indicator, u[0], t, arr_x, a)
-                temp = t0 + 2 * t
-                u[2] = unext(indicator, u, a, h0, t, temp, arr_x)
-            u[0] = u[1]
-            u[1] = u[2]
-            u[2] = unext(indicator, u, a, h0, t, t_, arr_x)
-        arr = np.abs(u[2] - u_0(arr_x, tn))
-        err[i] = np.max(arr)
-        i += 1
-        '''
     for h0 in h:
         print(h0)
         N = round((xn - x0) / h0)

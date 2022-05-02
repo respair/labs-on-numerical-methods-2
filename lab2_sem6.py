@@ -17,18 +17,22 @@ def gamma1(t):
 
 
 def gamma0(t):
-    return 0
+    if t < 1:
+        return 1/k/s
+    else:
+        return 0
+
 
 
 def u0n(x):
-    return -x*q/(k*s)+l/(k*s)
+    return 0 #-x*q/(k*s)+l/(k*s)
 
 
-alpha = [1, 0]
-beta = [0, 1]
+alpha = [0, 0]
+beta = [1, 1]
 
 
-def koef(prev, time, tau, xrange, h):
+def koef(old, time, tau, xrange, h):
     d = np.zeros(len(xrange))
     d[0] = gamma0(time*tau)
     d[-1] = gamma1(time*tau)
@@ -47,8 +51,8 @@ def koef(prev, time, tau, xrange, h):
         a[i] = 1/2 * (tau * a_**2 / h**2)
         b[i] = -1 - 2 * 1/2 * (tau * a_**2 / h**2)
         c[i] = 1/2 * (tau * a_**2 / h**2)
-        d[i] = (tau * a_**2 / h ** 2)*(k-1)*(prev[i+1] - 2*prev[i] + prev[i-1]) - tau * func(xrange[i], (time - 0.5)*tau) \
-               - prev[i]
+        d[i] = (tau * a_**2 / h ** 2)*(k-1)*(old[i+1] - 2*old[i] + old[i-1]) - tau * func(xrange[i], (time - 0.5)*tau) \
+               - old[i]
 
     return solve(a, b, c, d, xrange)
 
@@ -76,25 +80,25 @@ def solve(a, b, c, d, x):
 def graph():
     left_end = 0
     right_end = l
-    t0 = 1
-    tn = 5
+    t0 = 0
+    tn = 4
     n = 50
     h = (right_end - left_end) / n
     tau = h / 2
     time_range = np.linspace(t0, tn, int((tn - t0) / tau))
     xrange = np.arange(left_end, right_end, h)
 
-    prev = u0n(xrange)
     next = np.zeros(len(xrange))
+    old_next = np.zeros(len(xrange))#u0n(xrange) #тот что был до некст
 
-    for i in range(1, len(time_range) + 1):
-        next = koef(prev, i, tau, xrange, h)
-        prev = next
+    for j in range(1, len(time_range) + 1):
+        next = koef(old_next, j, tau, xrange, h)
+        old_next = next
 
     plt.xlabel("x")
     plt.ylabel("u")
     plt.grid()
-    plt.plot(xrange, next, color='r', label="Численное решение")
+    plt.plot(xrange, next, color='r', label="t = 4")
     plt.legend()
 
     plt.show()

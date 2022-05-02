@@ -83,8 +83,10 @@ def graph():
     t0 = 0
     tn = 4
     n = 50
+    
     h = (right_end - left_end) / n
     tau = h / 2
+    
     time_range = np.linspace(t0, tn, int((tn - t0) / tau))
     xrange = np.arange(left_end, right_end, h)
 
@@ -97,8 +99,8 @@ def graph():
 
     plt.xlabel("x")
     plt.ylabel("u")
-    plt.grid()
     plt.plot(xrange, next, color='r', label="t = 4")
+    plt.grid()
     plt.legend()
 
     plt.show()

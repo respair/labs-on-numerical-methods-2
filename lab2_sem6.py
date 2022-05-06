@@ -18,7 +18,7 @@ def gamma1(t):
 
 def gamma0(t):
     if t < 1:
-        return 1/k/s
+        return -1/k/s
     else:
         return 0
 
@@ -28,8 +28,8 @@ def u0n(x):
     return 0 #-x*q/(k*s)+l/(k*s)
 
 
-alpha = [0, 0]
-beta = [1, 1]
+alpha = [1, 1]
+beta = [0, 0]
 
 
 def koef(old, time, tau, xrange, h):
@@ -81,12 +81,10 @@ def graph():
     left_end = 0
     right_end = l
     t0 = 0
-    tn = 4
+    tn = 100
     n = 50
-    
     h = (right_end - left_end) / n
     tau = h / 2
-    
     time_range = np.linspace(t0, tn, int((tn - t0) / tau))
     xrange = np.arange(left_end, right_end, h)
 
@@ -99,8 +97,9 @@ def graph():
 
     plt.xlabel("x")
     plt.ylabel("u")
-    plt.plot(xrange, next, color='r', label="t = 4")
+    plt.ylim((None, 0.5))
     plt.grid()
+    plt.plot(xrange, next, label="t = "+str(tn))
     plt.legend()
 
     plt.show()

@@ -103,7 +103,7 @@ def graph():
     left_end = 0
     right_end = l
     t0 = 0
-    tn = 2
+    tn = 3
     n = 50
     h = (right_end - left_end) / n
     tau = 0.01

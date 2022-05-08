@@ -104,7 +104,7 @@ def graph():
     right_end = l
     t0 = 0
     tn = 2
-    n = 60
+    n = 50
     h = (right_end - left_end) / n
     tau = 0.01
     time_range = np.linspace(t0, tn, int((tn - t0) / tau))

@@ -54,11 +54,11 @@ def anim():
     t0 = 0
     tn = 4
     C = 0.98
-    m = 500
-    h = (end - start) / m
-    xrange = np.linspace(start, end, m)
+    N = 500
+    h = (end - start) / N
+    xrange = np.linspace(start, end, N)
 
-    u = np.zeros((2, m))
+    u = np.zeros((2, N))
     u[0] = u0(indicator, xrange)
 
     if indicator == 1:

@@ -53,8 +53,8 @@ def anim():
     end = 10
     t0 = 0
     tn = 4
-    C = 0.5
-    m = 200
+    C = 0.98
+    m = 500
     h = (end - start) / m
     xrange = np.linspace(start, end, m)
 
